@@ -20,6 +20,7 @@ import com.example.pincast.ui.screens.ImageDetailScreen
 import com.example.pincast.ui.screens.LoginScreen
 import com.example.pincast.ui.screens.UploadScreen
 import com.example.pincast.ui.screens.Web3Screen
+import com.example.pincast.ui.screens.AboutScreen
 import com.example.pincast.ui.theme.PincastTheme
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -104,6 +105,11 @@ fun PincastApp() {
         // Additional screen for Web3 features
         composable("web3") {
             Web3Screen(navController = navController)
+        }
+        
+        // Add About screen
+        composable(Screen.About.route) {
+            AboutScreen(navController = navController)
         }
     }
 }
