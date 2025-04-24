@@ -1,0 +1,20 @@
+MANUAL ICON PLACEMENT INSTRUCTIONS
+
+For older Android versions, you should manually place the Jackal PinCast logo PNG files in the following directories:
+
+1. app/src/main/res/mipmap-mdpi/ic_launcher.png (48x48 px)
+2. app/src/main/res/mipmap-hdpi/ic_launcher.png (72x72 px)
+3. app/src/main/res/mipmap-xhdpi/ic_launcher.png (96x96 px)
+4. app/src/main/res/mipmap-xxhdpi/ic_launcher.png (144x144 px)
+5. app/src/main/res/mipmap-xxxhdpi/ic_launcher.png (192x192 px)
+
+Also create round versions:
+1. app/src/main/res/mipmap-mdpi/ic_launcher_round.png (48x48 px)
+2. app/src/main/res/mipmap-hdpi/ic_launcher_round.png (72x72 px)
+3. app/src/main/res/mipmap-xhdpi/ic_launcher_round.png (96x96 px)
+4. app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png (144x144 px)
+5. app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png (192x192 px)
+
+These should be the Jackal PinCast logo on a black background, with white pin shape.
+
+The adaptive icons created via XML will handle Android 8.0+ devices, but these PNG files are needed for compatibility with older devices. 
