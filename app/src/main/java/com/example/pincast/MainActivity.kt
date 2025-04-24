@@ -21,6 +21,7 @@ import com.example.pincast.ui.screens.LoginScreen
 import com.example.pincast.ui.screens.UploadScreen
 import com.example.pincast.ui.screens.Web3Screen
 import com.example.pincast.ui.screens.AboutScreen
+import com.example.pincast.ui.screens.SettingsScreen
 import com.example.pincast.ui.theme.PincastTheme
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -55,7 +56,8 @@ fun PincastApp() {
                     navController.navigate(Screen.Gallery.route)
                 },
                 onNavigateToUpload = { navController.navigate(Screen.Upload.route) },
-                onLogout = { navController.navigate(Screen.Login.route) }
+                onLogout = { navController.navigate(Screen.Login.route) },
+                navController = navController
             )
         }
         
@@ -110,6 +112,11 @@ fun PincastApp() {
         // Add About screen
         composable(Screen.About.route) {
             AboutScreen(navController = navController)
+        }
+        
+        // Add Settings screen
+        composable(Screen.Settings.route) {
+            SettingsScreen(navController = navController)
         }
     }
 }

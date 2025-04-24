@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +17,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.pincast.R
+import com.example.pincast.ui.navigation.Screen
 import com.example.pincast.ui.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,6 +28,7 @@ fun HomeScreen(
     onNavigateToGallery: () -> Unit,
     onNavigateToUpload: () -> Unit,
     onLogout: () -> Unit,
+    navController: NavController,
     authViewModel: AuthViewModel = viewModel()
 ) {
     Scaffold(
@@ -43,6 +47,9 @@ fun HomeScreen(
                     }
                     IconButton(onClick = { navController.navigate(Screen.About.route) }) {
                         Icon(Icons.Default.Info, contentDescription = "About")
+                    }
+                    IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings")
                     }
                 }
             )

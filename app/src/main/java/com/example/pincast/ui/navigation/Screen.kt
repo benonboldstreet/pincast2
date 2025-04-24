@@ -7,6 +7,7 @@ sealed class Screen(val route: String) {
     object Upload : Screen("upload")
     object Web3 : Screen("web3")
     object About : Screen("about")
+    object Settings : Screen("settings")
     
     object ImageDetail : Screen("image_detail/{cid}/{name}/{url}") {
         fun createRoute(cid: String, name: String, url: String): String {
