@@ -9,7 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.pincast.data.models.GatewayInfo
+import com.example.pincast.data.models.GatewayStatus
 import com.example.pincast.ui.viewmodels.GatewayHealthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -134,6 +139,28 @@ fun GatewayHealthScreen(
                         }
                     }
                     
+                    // Fastest response time
+                    Text(
+                        "Response Time Colors",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.Refresh,
+                            contentDescription = null,
+                            tint = Color(0xFF4CAF50),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Fast (< 1s)")
+                    }
+                    
                     // Gateway list
                     Text(
                         "Gateway Status",
@@ -233,7 +260,7 @@ fun GatewayStatusCard(
                     
                     IconButton(onClick = { expanded = !expanded }, modifier = Modifier.size(24.dp)) {
                         Icon(
-                            if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                            if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                             contentDescription = if (expanded) "Show less" else "Show more",
                             modifier = Modifier.size(20.dp)
                         )
@@ -294,7 +321,7 @@ fun GatewayStatusCard(
                         onClick = onRefresh,
                         modifier = Modifier.align(Alignment.End)
                     ) {
-                        Icon(Icons.Default.Speed, contentDescription = null)
+                        Icon(Icons.Default.Refresh, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Test Gateway")
                     }

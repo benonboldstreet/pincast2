@@ -14,6 +14,16 @@ import kotlinx.coroutines.launch
 import java.net.URL
 import java.net.URLConnection
 
+// Default IPFS gateways for the view model to use
+private val DEFAULT_IPFS_GATEWAYS = listOf(
+    "https://cloudflare-ipfs.com/ipfs/",
+    "https://ipfs.io/ipfs/",
+    "https://gateway.pinata.cloud/ipfs/",
+    "https://gateway.ipfs.io/ipfs/",
+    "https://dweb.link/ipfs/",
+    "https://ipfs.fleek.co/ipfs/"
+)
+
 data class ImageDetailUiState(
     val cid: String = "",
     val currentGateway: String = "",
@@ -36,7 +46,7 @@ class ImageDetailViewModel(application: Application) : AndroidViewModel(applicat
         _uiState.update { it.copy(
             cid = cid,
             isLoading = true,
-            availableGateways = cacheRepository.cacheManager.IPFS_GATEWAYS.map { gateway -> "$gateway$cid" }
+            availableGateways = DEFAULT_IPFS_GATEWAYS.map { gateway -> "$gateway$cid" }
         ) }
         
         viewModelScope.launch {
@@ -57,7 +67,7 @@ class ImageDetailViewModel(application: Application) : AndroidViewModel(applicat
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error getting best URL for CID $cid", e)
-                val fallbackUrl = "${cacheRepository.cacheManager.IPFS_GATEWAYS.first()}$cid"
+                val fallbackUrl = "${DEFAULT_IPFS_GATEWAYS.first()}$cid"
                 _uiState.update { it.copy(
                     currentGateway = fallbackUrl,
                     isLoading = false
@@ -92,7 +102,7 @@ class ImageDetailViewModel(application: Application) : AndroidViewModel(applicat
     
     private suspend fun detectMimeType(cid: String): String {
         return try {
-            val gateway = cacheRepository.cacheManager.IPFS_GATEWAYS.first()
+            val gateway = DEFAULT_IPFS_GATEWAYS.first()
             val url = URL("$gateway$cid")
             val connection = url.openConnection()
             connection.connectTimeout = 5000

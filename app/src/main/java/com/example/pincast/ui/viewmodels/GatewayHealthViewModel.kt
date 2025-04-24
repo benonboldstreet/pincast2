@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pincast.PincastApplication
 import com.example.pincast.data.cache.CacheManager
+import com.example.pincast.data.models.GatewayInfo
+import com.example.pincast.data.models.GatewayStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,19 +19,14 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-enum class GatewayStatus {
-    ONLINE,
-    OFFLINE,
-    SLOW,
-    UNKNOWN
-}
-
-data class GatewayInfo(
-    val name: String,
-    val url: String,
-    val status: GatewayStatus = GatewayStatus.UNKNOWN,
-    val responseTimeMs: Long = 0,
-    val lastTestedAt: String? = null
+// Default IPFS gateways
+private val DEFAULT_IPFS_GATEWAYS = listOf(
+    "https://cloudflare-ipfs.com/ipfs/",
+    "https://ipfs.io/ipfs/",
+    "https://gateway.pinata.cloud/ipfs/",
+    "https://gateway.ipfs.io/ipfs/",
+    "https://dweb.link/ipfs/",
+    "https://ipfs.fleek.co/ipfs/"
 )
 
 data class GatewayHealthUiState(
@@ -51,10 +48,13 @@ class GatewayHealthViewModel(application: Application) : AndroidViewModel(applic
     }
     
     private fun initializeGateways() {
-        val gateways = CacheManager.IPFS_GATEWAYS.map { gateway ->
+        val gateways = DEFAULT_IPFS_GATEWAYS.map { gateway ->
             GatewayInfo(
+                url = "${gateway}QmYgtfMBZW5B5bWgwHXvDyDwHXxG8yf6xgULYANpBnz7Kf", // Test CID
                 name = gateway,
-                url = "${gateway}QmYgtfMBZW5B5bWgwHXvDyDwHXxG8yf6xgULYANpBnz7Kf" // Test CID
+                status = GatewayStatus.UNKNOWN,
+                responseTimeMs = 0,
+                lastTestedAt = null
             )
         }
         
@@ -153,14 +153,14 @@ class GatewayHealthViewModel(application: Application) : AndroidViewModel(applic
                 gateway.copy(
                     status = status,
                     responseTimeMs = responseTime,
-                    lastTestedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    lastTestedAt = LocalDateTime.now()
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "Gateway test failed for ${gateway.url}: ${e.message}")
                 gateway.copy(
                     status = GatewayStatus.OFFLINE,
                     responseTimeMs = 0,
-                    lastTestedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    lastTestedAt = LocalDateTime.now()
                 )
             }
         }

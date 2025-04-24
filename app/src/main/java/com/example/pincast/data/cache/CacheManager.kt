@@ -188,7 +188,7 @@ class CacheManager(private val context: Context) {
     /**
      * Clear the entire cache
      */
-    fun clearCache() {
+    suspend fun clearCache() {
         // Clear memory cache
         memoryCache.evictAll()
         urlCache.evictAll()

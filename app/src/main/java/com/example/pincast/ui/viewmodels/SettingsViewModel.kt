@@ -13,6 +13,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
+// Default IPFS gateways 
+private val DEFAULT_IPFS_GATEWAYS = listOf(
+    "https://cloudflare-ipfs.com/ipfs/",
+    "https://ipfs.io/ipfs/",
+    "https://gateway.pinata.cloud/ipfs/",
+    "https://gateway.ipfs.io/ipfs/",
+    "https://dweb.link/ipfs/",
+    "https://ipfs.fleek.co/ipfs/"
+)
+
 data class SettingsUiState(
     val maxCacheSizeMb: Int = 100,
     val currentCacheSizeMb: Int = 0,
@@ -21,7 +31,7 @@ data class SettingsUiState(
     val preCacheOnWifi: Boolean = true,
     val keepFavoritesCached: Boolean = true,
     val primaryGateway: String = "https://cloudflare-ipfs.com/ipfs/",
-    val availableGateways: List<String> = CacheManager.IPFS_GATEWAYS,
+    val availableGateways: List<String> = DEFAULT_IPFS_GATEWAYS,
     val gatewayStats: Map<String, Long> = emptyMap()
 )
 
@@ -44,7 +54,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             autoCleanCache = true,
             preCacheOnWifi = true,
             keepFavoritesCached = true,
-            primaryGateway = CacheManager.IPFS_GATEWAYS.first()
+            primaryGateway = DEFAULT_IPFS_GATEWAYS.first()
         ) }
     }
     
@@ -59,7 +69,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 val itemCount = cacheDir.listFiles()?.size ?: 0
                 
                 _uiState.update { it.copy(
-                    currentCacheSizeMb = size,
+                    currentCacheSizeMb = size.toInt(),
                     cachedItemCount = itemCount
                 ) }
             }

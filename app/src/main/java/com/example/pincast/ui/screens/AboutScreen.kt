@@ -16,7 +16,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.pincast.R
-import com.example.pincast.BuildConfig
+
+// Fallback for BuildConfig if it's not generated
+private object MockBuildConfig {
+    const val VERSION_NAME = "1.0.0"
+    const val VERSION_CODE = 1
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,20 +64,20 @@ fun AboutScreen(navController: NavController) {
             )
             
             Text(
-                text = "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                text = "Version ${MockBuildConfig.VERSION_NAME} (${MockBuildConfig.VERSION_CODE})",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
             
             // App description
-            SectionTitle(title = "Overview")
+            AboutSectionTitle(title = "Overview")
             DescriptionText(
                 text = "Pincast2 is a modern Android application designed to revolutionize media management through decentralized storage with IPFS integration via the Jackal Protocol."
             )
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            SectionTitle(title = "Core Features")
+            AboutSectionTitle(title = "Core Features")
             
             FeatureItem(
                 title = "Decentralized Storage",
@@ -102,7 +107,7 @@ fun AboutScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(24.dp))
             
             // Credits section
-            SectionTitle(title = "Credits")
+            AboutSectionTitle(title = "Credits")
             DescriptionText(
                 text = "Developed with ❤️ using Kotlin, Jetpack Compose, and modern Android architecture components."
             )
@@ -123,7 +128,7 @@ fun AboutScreen(navController: NavController) {
 }
 
 @Composable
-fun SectionTitle(title: String) {
+fun AboutSectionTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.titleLarge,

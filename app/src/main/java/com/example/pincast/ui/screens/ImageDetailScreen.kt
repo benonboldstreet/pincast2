@@ -12,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -116,7 +116,7 @@ fun ImageDetailScreen(
                     // Favorite button
                     IconButton(onClick = { viewModel.toggleFavorite() }) {
                         Icon(
-                            if (isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
+                            if (isFavorite) Icons.Default.Star else Icons.Outlined.Star,
                             contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
                             tint = if (isFavorite) Color(0xFFFFC107) else LocalContentColor.current.copy(alpha = LocalContentColor.current.alpha)
                         )

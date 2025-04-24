@@ -15,10 +15,4 @@ sealed class Screen(val route: String) {
             return "image_detail/$cid/$name/$url"
         }
     }
-    
-    object CollectionDetail : Screen("collection_detail/{id}") {
-        fun createRoute(id: String): String {
-            return "collection_detail/$id"
-        }
-    }
 } 
