@@ -19,29 +19,30 @@ class CacheRepository(private val context: Context) {
     
     private val TAG = "CacheRepository"
     
-    private val cacheManager = CacheManager(context)
+    // Expose the CacheManager and DAO for advanced use cases
+    val cacheManager = CacheManager(context)
     private val database = CidDatabase.getDatabase(context)
-    private val dao = database.cidMetadataDao()
+    val cidDao = database.cidMetadataDao()
     
     /**
      * Get all cached items
      */
     fun getAllCachedItems(): Flow<List<CidMetadata>> {
-        return dao.getAllMetadata()
+        return cidDao.getAllMetadata()
     }
     
     /**
      * Get favorite items
      */
     fun getFavorites(): Flow<List<CidMetadata>> {
-        return dao.getFavorites()
+        return cidDao.getFavorites()
     }
     
     /**
      * Search for cached items
      */
     fun searchCache(query: String): Flow<List<CidMetadata>> {
-        return dao.search(query)
+        return cidDao.search(query)
     }
     
     /**
@@ -62,7 +63,7 @@ class CacheRepository(private val context: Context) {
      * Get all cached items as Images
      */
     fun getAllCachedImages(): Flow<List<Image>> {
-        return dao.getAllMetadata().map { metadataList ->
+        return cidDao.getAllMetadata().map { metadataList ->
             metadataList.map { metadata ->
                 Image(
                     id = metadata.cid,
@@ -86,7 +87,7 @@ class CacheRepository(private val context: Context) {
             accessCount = 1
         )
         
-        dao.insert(metadata)
+        cidDao.insert(metadata)
         cacheManager.cacheImage(image)
     }
     
@@ -94,7 +95,7 @@ class CacheRepository(private val context: Context) {
      * Get metadata for a CID
      */
     suspend fun getMetadata(cid: String): CidMetadata? {
-        return dao.getMetadata(cid)
+        return cidDao.getMetadata(cid)
     }
     
     /**
@@ -102,10 +103,12 @@ class CacheRepository(private val context: Context) {
      */
     suspend fun getBestUrlForCid(cid: String): String {
         // Track access
-        dao.incrementAccessCount(cid)
+        val metadata = cidDao.getMetadata(cid)
+        if (metadata != null) {
+            cidDao.incrementAccessCount(cid)
+        }
         
         // Check if we have a local file first
-        val metadata = dao.getMetadata(cid)
         if (metadata?.localPath != null) {
             val file = File(metadata.localPath)
             if (file.exists() && file.length() > 0) {
@@ -133,9 +136,18 @@ class CacheRepository(private val context: Context) {
             val file = cacheManager.downloadAndCacheFile(cid)
             if (file != null) {
                 // Update metadata with local path
-                val metadata = dao.getMetadata(cid)
+                val metadata = cidDao.getMetadata(cid)
                 if (metadata != null) {
-                    dao.update(metadata.copy(localPath = file.absolutePath))
+                    cidDao.update(metadata.copy(localPath = file.absolutePath))
+                } else {
+                    // Create new metadata if none exists
+                    val newMetadata = CidMetadata(
+                        cid = cid,
+                        name = "Unknown",
+                        localPath = file.absolutePath,
+                        lastAccessed = LocalDateTime.now()
+                    )
+                    cidDao.insert(newMetadata)
                 }
                 return@withContext true
             }
@@ -151,7 +163,7 @@ class CacheRepository(private val context: Context) {
      */
     suspend fun deleteCid(cid: String) {
         // Delete from database
-        dao.deleteByCid(cid)
+        cidDao.deleteByCid(cid)
         
         // Delete local file
         val file = cacheManager.getCachedFile(cid)
@@ -162,15 +174,28 @@ class CacheRepository(private val context: Context) {
      * Set a CID as favorite
      */
     suspend fun setFavorite(cid: String, isFavorite: Boolean) {
-        dao.setFavorite(cid, isFavorite)
+        // Check if metadata exists first
+        val metadata = cidDao.getMetadata(cid)
+        if (metadata != null) {
+            cidDao.setFavorite(cid, isFavorite)
+        } else {
+            // Create metadata if it doesn't exist
+            val newMetadata = CidMetadata(
+                cid = cid,
+                name = "Unknown",
+                isFavorite = isFavorite,
+                lastAccessed = LocalDateTime.now()
+            )
+            cidDao.insert(newMetadata)
+        }
     }
     
     /**
      * Clear all non-favorite cached content
      */
     suspend fun clearNonFavoriteCache() = withContext(Dispatchers.IO) {
-        val allMetadata = dao.getAllMetadata().map { it.filter { metadata -> !metadata.isFavorite } }
-        allMetadata.collect { metadataList ->
+        val nonFavorites = cidDao.getAllMetadata().map { it.filter { metadata -> !metadata.isFavorite } }
+        nonFavorites.collect { metadataList ->
             for (metadata in metadataList) {
                 deleteCid(metadata.cid)
             }

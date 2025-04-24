@@ -22,6 +22,7 @@ import com.example.pincast.ui.screens.UploadScreen
 import com.example.pincast.ui.screens.Web3Screen
 import com.example.pincast.ui.screens.AboutScreen
 import com.example.pincast.ui.screens.SettingsScreen
+import com.example.pincast.ui.screens.GatewayHealthScreen
 import com.example.pincast.ui.theme.PincastTheme
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -117,6 +118,11 @@ fun PincastApp() {
         // Add Settings screen
         composable(Screen.Settings.route) {
             SettingsScreen(navController = navController)
+        }
+        
+        // Add Gateway Health screen
+        composable(Screen.GatewayHealth.route) {
+            GatewayHealthScreen(navController = navController)
         }
     }
 }

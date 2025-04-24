@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.pincast.ui.navigation.Screen
 import com.example.pincast.ui.viewmodels.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,6 +115,25 @@ fun SettingsScreen(
                     }
                 }
             }
+            
+            // After the IPFS Gateway Settings section title
+            Text(
+                "Gateway Status",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
+            // Add Gateway Health button
+            OutlinedButton(
+                onClick = { navController.navigate(Screen.GatewayHealth.route) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.Speed, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Check Gateway Health")
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
             
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             
